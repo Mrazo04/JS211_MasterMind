@@ -8,7 +8,7 @@ const rl = readline.createInterface({
 });
 
 let board = [];
-let solution = "abcd";
+let solution = "";
 let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const printBoard = () => {
@@ -37,7 +37,6 @@ const generateHint = (guess) => {
 
   let correctLetterLocations = 0;
   let correctLetters = 0;
-  let targetIndex;
 
   for (let i = 0; i < solutionArray.length; i++) {
     if (solutionArray[i] == guessArray[i]) {
@@ -46,46 +45,43 @@ const generateHint = (guess) => {
     }
   }
 
-  guessArray.forEach((letter) => {
-    targetIndex = solutionArray.indexOf(letter);
-    //console.log(targetIndex)
+  for (let i = 0; i < solutionArray.length; i++) {
+    let targetIndex = solutionArray.indexOf(guessArray[i]);
 
     if (targetIndex > -1) {
       correctLetters++;
       solutionArray[targetIndex] = null;
       //console.log(correctLetters)
       //console.log(solutionArray)
-
-      let hint =
-        "There are " +
-        correctLetterLocations +
-        " letter(s) in the correct position and " +
-        correctLetters +
-        " correct letter(s) NOT in the correct position.";
-      //console.log(hint)
-
-      board.push(guess + ": " + hint);
-      //console.log(board)
-
-      let answer = "You ran out of turns! The answer is: " + solution;
-      let tryAgain = "Guess again.";
-
-      if (board.length == 10) {
-        return answer;
-      } else {
-        return tryAgain;
-      }
     }
-  });
+    //console.log(targetIndex)
+  }
+  return `${correctLetterLocations}-${correctLetters}`;
 };
 
 const mastermind = (guess) => {
-  //solution = 'abcd'; // Comment this out to generate a random solution
+  solution = "abcd"; // Comment this out to generate a random solution
   // your code here
-  generateHint(guess);
-  // detecting a win
+
+  let hint = generateHint(guess);
+
+  board.push(`${guess}-${hint}`);
+  //console.log(board)
+
   if (guess == solution) {
+    console.log("You guessed it!");
     return "You guessed it!";
+  }
+
+  let answer = "You ran out of turns! The answer is: " + solution;
+  let tryAgain = "Guess again.";
+
+  if (board.length == 10) {
+    console.log("You ran out of turns! The answer is: " + solution);
+    return answer;
+  } else {
+    console.log("Guess again.");
+    return tryAgain;
   }
 };
 
